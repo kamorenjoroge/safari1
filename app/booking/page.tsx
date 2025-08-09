@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import axios from "axios";
 import {
   FaCar,
@@ -32,8 +32,7 @@ interface Car {
   type: CarType;
   image: string;
   schedule: Schedule[];
-    priceFrom: string;
-
+  priceFrom: string;
 }
 
 interface ApiResponse {
@@ -262,8 +261,25 @@ function BookingCalendar({ bookedDates }: { bookedDates: string[] }) {
   );
 }
 
-// Main booking page component
-const BookingPage = () => {
+// Loading component for Suspense fallback
+function BookingPageFallback() {
+  return (
+    <div className="min-h-screen bg-secondary flex items-center justify-center p-4">
+      <div className="text-center p-6 sm:p-8 bg-white rounded-2xl shadow-xl max-w-md w-full">
+        <div className="relative mb-6">
+          <FaSpinner className="h-12 w-12 sm:h-16 sm:w-16 text-primary mx-auto animate-spin" />
+          <div className="absolute inset-0 bg-primary opacity-20 rounded-full animate-ping"></div>
+        </div>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
+          Loading booking page...
+        </h2>
+      </div>
+    </div>
+  );
+}
+
+// Main booking page component wrapped with search params logic
+function BookingPageContent() {
   const searchParams = useSearchParams();
   const carId = searchParams.get("carid");
 
@@ -358,8 +374,7 @@ const BookingPage = () => {
     <div className="min-h-screen bg-secondary/5">
       {/* Hero Section */}
       <div className="relative bg-primary/5 overflow-hidden">
-        <div className="absolute inset-0 bg-earth/10"></div>{" "}
-        {/* Softer earthy overlay */}
+        <div className="absolute inset-0 bg-earth/10"></div>
         <div className="relative container mx-auto px-4 py-12 sm:py-16 lg:py-20">
           <div className="max-w-4xl">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-earth mb-4">
@@ -542,6 +557,15 @@ const BookingPage = () => {
 
       <BookingForm />
     </div>
+  );
+}
+
+// Main component that wraps everything in Suspense
+const BookingPage = () => {
+  return (
+    <Suspense fallback={<BookingPageFallback />}>
+      <BookingPageContent />
+    </Suspense>
   );
 };
 
