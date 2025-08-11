@@ -34,9 +34,11 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
           model: 1,
           image: 1,
           schedule: 1,
-          'type.description': 1,
-          'type.priceFrom': 1,
-          'type.features': 1
+          features: 1,
+          pricePerDay: 1,
+      
+          'type.description': 1
+          
         }
       }
     ]);

@@ -14,7 +14,8 @@ import {
   FaCog,
 } from "react-icons/fa";
 import Image from "next/image";
-import BookingForm from "../components/BookingForm";
+//import BookingForm from "../components/BookingForm";
+import BookingForms from "../components/BookingForms";
 
 interface Schedule {
   date: string[];
@@ -22,8 +23,6 @@ interface Schedule {
 
 interface CarType {
   description: string;
-  priceFrom: string;
-  features: string[];
 }
 
 interface Car {
@@ -32,7 +31,8 @@ interface Car {
   type: CarType;
   image: string;
   schedule: Schedule[];
-  priceFrom: string;
+  pricePerDay: string;
+  features: string[];
 }
 
 interface ApiResponse {
@@ -427,17 +427,13 @@ function BookingPageContent() {
                     </div>
                     <div className="mt-4 sm:mt-0 text-right">
                       <div className="text-3xl sm:text-4xl font-bold text-primary">
-                        KES {parseInt(car.type.priceFrom).toLocaleString()}
+                        KES {parseInt(car.pricePerDay).toLocaleString()}
                       </div>
                       <span className="text-sm text-gray-500 font-medium">
                         /day
                       </span>
                     </div>
                   </div>
-
-                  <button className="w-full bg-primary text-white py-4 rounded-xl font-semibold text-lg hover:bg-primary-dark transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-                    Book Now
-                  </button>
                 </div>
               </div>
 
@@ -450,7 +446,7 @@ function BookingPageContent() {
                   Vehicle Features
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {car.type.features.map((feature, index) => (
+                  {car.features.map((feature, index) => (
                     <div
                       key={index}
                       className="flex items-center space-x-4 p-3 bg-gray-50 rounded-xl hover:bg-secondary transition-colors duration-200"
@@ -552,10 +548,24 @@ function BookingPageContent() {
               </div>
             </div>
           </div>
+          <div className="width-full xl:col-span-2 mt-10">
+            <BookingForms
+              _id={car._id}
+              model={car.model}
+              schedule={
+                car.schedule
+                  ? car.schedule.map((s) => ({
+                      ...s,
+                      date: s.date.map((d) => new Date(d)),
+                    }))
+                  : []
+              }
+              priceFrom={car.pricePerDay}
+            />
+          </div>
         </div>
       </section>
-
-      <BookingForm />
+      <div></div>
     </div>
   );
 }

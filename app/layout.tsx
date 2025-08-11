@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/NavBar";
 import Header from "./components/Header";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,8 +30,27 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header/>
-        <Navbar/>
+        <Header />
+        <Navbar />
+        <div>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              success: {
+                className:
+                  "bg-green-400 text-white px-4 py-2 rounded shadow-lg font-medium",
+              },
+              error: {
+                className:
+                  "bg-red-600 text-white px-4 py-2 rounded shadow-lg font-medium",
+              },
+              loading: {
+                className:
+                  "bg-yellow-500 text-white px-4 py-2 rounded shadow-lg font-medium",
+              },
+            }}
+          />
+        </div>
         {children}
       </body>
     </html>
