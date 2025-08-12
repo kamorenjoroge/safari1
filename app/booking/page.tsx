@@ -14,8 +14,7 @@ import {
   FaCog,
 } from "react-icons/fa";
 import Image from "next/image";
-//import BookingForm from "../components/BookingForm";
-import BookingForms from "../components/BookingForms";
+import BookingForm from "../components/BookingForm";
 
 interface Schedule {
   date: string[];
@@ -549,7 +548,7 @@ function BookingPageContent() {
             </div>
           </div>
           <div className="width-full xl:col-span-2 mt-10">
-            <BookingForms
+            <BookingForm
               _id={car._id}
               model={car.model}
               schedule={
@@ -560,7 +559,7 @@ function BookingPageContent() {
                     }))
                   : []
               }
-              priceFrom={car.pricePerDay}
+              price={car.pricePerDay}
             />
           </div>
         </div>
