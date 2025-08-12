@@ -6,7 +6,7 @@ import { FaCar, FaCalendarAlt, FaUser, FaEnvelope, FaPhone, FaIdCard, FaFileAlt,
 
 type Schedule = {
   date: Date[];
-  available?: Date;
+  available: boolean; // Now required, defaults to true in schema
 };
 
 type BookingFormsProps = {
@@ -32,21 +32,26 @@ const BookingForms: React.FC<BookingFormsProps> = ({ _id, model, priceFrom, sche
     specialRequests: ''
   });
 
-  // Get all unavailable dates from schedule
+  // Get all unavailable dates from schedule (where available is false or past dates)
   const getUnavailableDates = (): Date[] => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // midnight to compare cleanly
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // midnight to compare cleanly
 
-  return schedule.flatMap(s =>
-    s.date
-      .map(d => new Date(d))
-      .filter(date => date >= today) // keep only today and future
-  );
-};
+    return schedule.flatMap(s =>
+      s.date
+        .map(d => new Date(d))
+        .filter(date => {
+          // Date is unavailable if:
+          // 1. It's in the past, OR
+          // 2. available is false (payment approved/booked)
+          return date < today || !s.available;
+        })
+    );
+  };
 
   const unavailableDates = getUnavailableDates();
 
-  // Check if a date is unavailable
+  // Check if a date is unavailable (booked/approved or in the past)
   const isDateUnavailable = (date: Date): boolean => {
     return unavailableDates.some(unavailable => 
       date.toDateString() === unavailable.toDateString()
@@ -58,6 +63,15 @@ const BookingForms: React.FC<BookingFormsProps> = ({ _id, model, priceFrom, sche
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return date < today;
+  };
+
+  // Check if date is booked/approved (available = false)
+  const isDateBooked = (date: Date): boolean => {
+    return schedule.some(s => 
+      !s.available && s.date.some(d => 
+        new Date(d).toDateString() === date.toDateString()
+      )
+    );
   };
 
   // Check if date is selected
@@ -162,8 +176,12 @@ const BookingForms: React.FC<BookingFormsProps> = ({ _id, model, priceFrom, sche
           phone: formData.phone,
           idNumber: formData.idNumber
         },
+        schedule: {
+          available: false, 
+          dates: selectedDates.map(date => date.toISOString())
+        },
         specialRequests: formData.specialRequests,
-        status: 'pending'
+        status: 'pending' // Will remain pending until admin approves payment
       };
 
       const response = await fetch('/api/booking', {
@@ -175,7 +193,7 @@ const BookingForms: React.FC<BookingFormsProps> = ({ _id, model, priceFrom, sche
       });
 
       if (response.ok) {
-        toast.success('Booking submitted successfully!');
+        toast.success('Booking submitted successfully! Awaiting payment approval.');
         // Reset form and close modal
         setSelectedDates([]);
         setFormData({
@@ -301,23 +319,24 @@ const BookingForms: React.FC<BookingFormsProps> = ({ _id, model, priceFrom, sche
                     ))}
                     {calendarDays.map((date, index) => {
                       const isCurrentMonth = date.getMonth() === currentMonth.getMonth();
-                      const isUnavailable = isDateUnavailable(date);
                       const isPast = isPastDate(date);
+                      const isBooked = isDateBooked(date);
                       const isSelected = isDateSelected(date);
+                      const isUnavailable = isPast || isBooked;
                       
                       return (
                         <button
                           key={index}
                           type="button"
                           onClick={() => handleDateClick(date)}
-                          disabled={isUnavailable || isPast}
+                          disabled={isUnavailable}
                           className={`
                             p-2 text-sm rounded-lg transition-all
-                            ${!isCurrentMonth ? 'text-dark' : ''}
+                            ${!isCurrentMonth ? 'text-gray-300' : ''}
                             ${isPast ? 'text-gray-300 cursor-not-allowed' : ''}
-                            ${isUnavailable ? 'bg-danger/70 text-light cursor-not-allowed line-through' : ''}
+                            ${isBooked ? 'bg-danger/70 text-white cursor-not-allowed line-through' : ''}
                             ${isSelected ? 'bg-primary text-white font-bold' : ''}
-                            ${!isUnavailable && !isPast && !isSelected && isCurrentMonth ? 
+                            ${!isUnavailable && !isSelected && isCurrentMonth ? 
                               'hover:bg-accent/90 cursor-pointer text-earth' : ''}
                           `}
                         >
@@ -335,7 +354,7 @@ const BookingForms: React.FC<BookingFormsProps> = ({ _id, model, priceFrom, sche
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-danger rounded"></div>
-                      <span>Unavailable</span>
+                      <span>Booked/Unavailable</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-accent rounded"></div>
@@ -492,7 +511,7 @@ const BookingForms: React.FC<BookingFormsProps> = ({ _id, model, priceFrom, sche
                     ) : (
                       <>
                         <FaCar />
-                        Confirm Booking - KES {totalAmount.toLocaleString()}
+                        Submit Booking - KES {totalAmount.toLocaleString()}
                       </>
                     )}
                   </button>
