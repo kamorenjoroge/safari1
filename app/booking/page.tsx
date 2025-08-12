@@ -30,7 +30,7 @@ interface Car {
   type: CarType;
   image: string;
   schedule: Schedule[];
-  pricePerDay: string;
+  pricePerDay: number;
   features: string[];
 }
 
@@ -426,7 +426,7 @@ function BookingPageContent() {
                     </div>
                     <div className="mt-4 sm:mt-0 text-right">
                       <div className="text-3xl sm:text-4xl font-bold text-primary">
-                        KES {parseInt(car.pricePerDay).toLocaleString()}
+                        KES {car.pricePerDay}
                       </div>
                       <span className="text-sm text-gray-500 font-medium">
                         /day
