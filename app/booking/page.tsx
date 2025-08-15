@@ -7,7 +7,6 @@ import {
   FaCalendarAlt,
   FaChevronLeft,
   FaChevronRight,
-  FaSpinner,
   FaCheck,
   FaUsers,
   FaGasPump,
@@ -95,7 +94,7 @@ function useCarDetails(carId: string | null) {
   return { car, loading, error };
 }
 
-// Enhanced Calendar Component
+// Enhanced Calendar Component with fleet colors
 function BookingCalendar({ bookedDates }: { bookedDates: string[] }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -169,39 +168,39 @@ function BookingCalendar({ bookedDates }: { bookedDates: string[] }) {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6">
+    <div className="bg-white rounded-xl shadow-md border border-earth/10 p-6">
       <div className="mb-6">
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={goToPreviousMonth}
-            className="p-2 sm:p-3 hover:bg-secondary rounded-xl transition-all duration-200 hover:shadow-md"
+            className="p-2 sm:p-3 hover:bg-earth/5 rounded-xl transition-all duration-200"
           >
-            <FaChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+            <FaChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-earth" />
           </button>
-          <h3 className="text-lg sm:text-xl font-bold text-gray-800">
+          <h3 className="text-lg sm:text-xl font-semibold text-earth">
             {monthNames[month]} {year}
           </h3>
           <button
             onClick={goToNextMonth}
-            className="p-2 sm:p-3 hover:bg-secondary rounded-xl transition-all duration-200 hover:shadow-md"
+            className="p-2 sm:p-3 hover:bg-earth/5 rounded-xl transition-all duration-200"
           >
-            <FaChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+            <FaChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-earth" />
           </button>
         </div>
 
         {/* Legend */}
         <div className="flex flex-wrap justify-center gap-3 sm:gap-6 text-xs sm:text-sm mb-6">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-success rounded-full shadow-sm"></div>
-            <span className="text-gray-600 font-medium">Available</span>
+            <div className="w-3 h-3 bg-primary rounded-full"></div>
+            <span className="text-earth/60 font-medium">Available</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-booked rounded-full shadow-sm"></div>
-            <span className="text-gray-600 font-medium">Booked</span>
+            <div className="w-3 h-3 bg-accent rounded-full"></div>
+            <span className="text-earth/60 font-medium">Booked</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-gray-300 rounded-full shadow-sm"></div>
-            <span className="text-gray-600 font-medium">Past</span>
+            <div className="w-3 h-3 bg-earth/30 rounded-full"></div>
+            <span className="text-earth/60 font-medium">Past</span>
           </div>
         </div>
       </div>
@@ -212,7 +211,7 @@ function BookingCalendar({ bookedDates }: { bookedDates: string[] }) {
         {dayNames.map((day) => (
           <div
             key={day}
-            className="text-center text-xs sm:text-sm font-semibold text-gray-500 py-2 sm:py-3"
+            className="text-center text-xs sm:text-sm font-semibold text-earth/60 py-2 sm:py-3"
           >
             <span className="hidden sm:inline">{day}</span>
             <span className="sm:hidden">{day.slice(0, 1)}</span>
@@ -236,13 +235,13 @@ function BookingCalendar({ bookedDates }: { bookedDates: string[] }) {
             <div
               key={index}
               className={`
-                h-8 sm:h-10 lg:h-12 flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer
+                h-8 sm:h-10 lg:h-12 flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer
                 ${
                   isPast
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    ? "bg-earth/10 text-earth/40 cursor-not-allowed"
                     : isBooked
-                    ? "bg-booked text-white shadow-md hover:shadow-lg transform hover:scale-105"
-                    : "bg-success text-white shadow-md hover:shadow-lg transform hover:scale-105 hover:bg-primary"
+                    ? "bg-accent text-white shadow-md hover:shadow-lg transform hover:scale-105"
+                    : "bg-primary text-white shadow-md hover:shadow-lg transform hover:scale-105 hover:bg-primary-dark"
                 }
                 ${
                   isToday && !isBooked && !isPast
@@ -260,19 +259,135 @@ function BookingCalendar({ bookedDates }: { bookedDates: string[] }) {
   );
 }
 
-// Loading component for Suspense fallback
-function BookingPageFallback() {
+// Loading component with dummy structure
+function BookingPageLoading() {
   return (
-    <div className="min-h-screen bg-secondary flex items-center justify-center p-4">
-      <div className="text-center p-6 sm:p-8 bg-white rounded-2xl shadow-xl max-w-md w-full">
-        <div className="relative mb-6">
-          <FaSpinner className="h-12 w-12 sm:h-16 sm:w-16 text-primary mx-auto animate-spin" />
-          <div className="absolute inset-0 bg-primary opacity-20 rounded-full animate-ping"></div>
+    <div className="bg-white min-h-screen">
+      {/* Hero Section Loading */}
+      <div className="bg-primary/10 py-12">
+        <div className="container mx-auto px-4">
+          <div className="h-10 bg-earth/20 rounded animate-pulse mb-2"></div>
+          <div className="h-6 bg-earth/10 rounded animate-pulse w-1/2"></div>
         </div>
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-          Loading booking page...
-        </h2>
       </div>
+
+      {/* Main Content Loading */}
+      <section className="relative -mt-8 px-4 pb-12">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+            {/* Car Details Loading */}
+            <div className="xl:col-span-2 space-y-6">
+              {/* Car Image and Basic Info Loading */}
+              <div className="bg-white rounded-xl shadow-md border border-earth/10 overflow-hidden">
+                <div className="h-64 sm:h-80 lg:h-96 bg-earth/20 animate-pulse"></div>
+                <div className="p-6 sm:p-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                    <div className="flex-1">
+                      <div className="h-8 bg-earth/20 rounded animate-pulse mb-2"></div>
+                      <div className="h-5 bg-earth/10 rounded animate-pulse w-3/4"></div>
+                    </div>
+                    <div className="mt-4 sm:mt-0">
+                      <div className="h-10 bg-primary/20 rounded animate-pulse w-24"></div>
+                      <div className="h-4 bg-earth/10 rounded animate-pulse w-16 mt-1"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Features Loading */}
+              <div className="bg-white rounded-xl shadow-md border border-earth/10 p-6 sm:p-8">
+                <div className="flex items-center mb-6">
+                  <div className="p-3 bg-primary/20 rounded-xl mr-4 animate-pulse">
+                    <div className="h-6 w-6"></div>
+                  </div>
+                  <div className="h-7 bg-earth/20 rounded animate-pulse w-40"></div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="flex items-center space-x-4 p-3 bg-earth/5 rounded-xl">
+                      <div className="p-2 bg-primary/20 rounded-lg animate-pulse">
+                        <div className="h-3 w-3"></div>
+                      </div>
+                      <div className="h-4 bg-earth/20 rounded animate-pulse flex-1"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Stats Loading */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="bg-white rounded-xl shadow-md p-4 sm:p-6 text-center border border-earth/10">
+                    <div className="p-3 bg-primary/20 rounded-xl w-fit mx-auto mb-3 animate-pulse">
+                      <div className="h-5 w-5"></div>
+                    </div>
+                    <div className="h-6 bg-earth/20 rounded animate-pulse mb-2 mx-auto w-12"></div>
+                    <div className="h-4 bg-earth/10 rounded animate-pulse mx-auto w-16"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Calendar Loading */}
+            <div className="xl:col-span-1">
+              <div className="sticky top-4 sm:top-8">
+                <div className="mb-6">
+                  <div className="flex items-center mb-3">
+                    <div className="p-3 bg-primary/20 rounded-xl mr-4 animate-pulse">
+                      <div className="h-6 w-6"></div>
+                    </div>
+                    <div className="h-7 bg-earth/20 rounded animate-pulse w-32"></div>
+                  </div>
+                  <div className="h-4 bg-earth/10 rounded animate-pulse mb-2"></div>
+                  <div className="h-4 bg-earth/10 rounded animate-pulse w-3/4"></div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-md border border-earth/10 p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <div className="p-2 bg-earth/10 rounded-xl animate-pulse">
+                      <div className="h-5 w-5"></div>
+                    </div>
+                    <div className="h-6 bg-earth/20 rounded animate-pulse w-32"></div>
+                    <div className="p-2 bg-earth/10 rounded-xl animate-pulse">
+                      <div className="h-5 w-5"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-7 gap-2 mb-4">
+                    {Array.from({ length: 7 }).map((_, i) => (
+                      <div key={i} className="h-4 bg-earth/10 rounded animate-pulse"></div>
+                    ))}
+                  </div>
+                  
+                  <div className="grid grid-cols-7 gap-2">
+                    {Array.from({ length: 35 }).map((_, i) => (
+                      <div key={i} className="h-10 bg-earth/10 rounded animate-pulse"></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Booking Form Loading */}
+          <div className="mt-10">
+            <div className="bg-white rounded-xl shadow-md border border-earth/10 p-6 sm:p-8">
+              <div className="h-8 bg-earth/20 rounded animate-pulse mb-6 w-48"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="h-4 bg-earth/10 rounded animate-pulse w-24"></div>
+                    <div className="h-10 bg-earth/10 rounded animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6">
+                <div className="h-12 bg-primary/20 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -297,43 +412,28 @@ function BookingPageContent() {
 
   // Show loading state
   if (loading) {
-    return (
-      <div className="min-h-screen bg-secondary flex items-center justify-center p-4">
-        <div className="text-center p-6 sm:p-8 bg-white rounded-2xl shadow-xl max-w-md w-full">
-          <div className="relative mb-6">
-            <FaSpinner className="h-12 w-12 sm:h-16 sm:w-16 text-primary mx-auto animate-spin" />
-            <div className="absolute inset-0 bg-primary opacity-20 rounded-full animate-ping"></div>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-            Loading vehicle details...
-          </h2>
-          <p className="text-gray-600 font-medium">Car ID: {carId}</p>
-        </div>
-      </div>
-    );
+    return <BookingPageLoading />;
   }
 
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-secondary flex items-center justify-center p-4">
-        <div className="text-center p-6 sm:p-8 bg-white rounded-2xl shadow-xl max-w-md w-full">
-          <FaCar className="h-12 w-12 sm:h-16 sm:w-16 text-gray-400 mx-auto mb-6" />
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-            Failed to load vehicle
-          </h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <p className="text-sm text-gray-500 mb-6">Car ID: {carId}</p>
-          <div className="flex flex-col sm:flex-row gap-3">
+      <div className="bg-white min-h-screen flex items-center justify-center">
+        <div className="text-center p-8">
+          <FaCar className="h-16 w-16 text-earth/30 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-earth mb-2">Failed to load vehicle</h2>
+          <p className="text-earth/60 mb-4">{error}</p>
+          <p className="text-sm text-earth/40 mb-6">Car ID: {carId}</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => window.location.reload()}
-              className="flex-1 px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all duration-200 font-semibold shadow-md hover:shadow-lg"
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
             >
               Try Again
             </button>
             <button
               onClick={() => window.history.back()}
-              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold"
+              className="px-4 py-2 rounded-lg border border-earth/20 text-earth hover:bg-earth/5 transition-colors"
             >
               Go Back
             </button>
@@ -346,19 +446,15 @@ function BookingPageContent() {
   // Show not found state
   if (!car) {
     return (
-      <div className="min-h-screen bg-secondary flex items-center justify-center p-4">
-        <div className="text-center p-6 sm:p-8 bg-white rounded-2xl shadow-xl max-w-md w-full">
-          <FaCar className="h-12 w-12 sm:h-16 sm:w-16 text-gray-400 mx-auto mb-6" />
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-            Vehicle not found
-          </h2>
-          <p className="text-gray-600 mb-4">
-            The requested vehicle could not be found.
-          </p>
-          <p className="text-sm text-gray-500 mb-6">Car ID: {carId}</p>
+      <div className="bg-white min-h-screen flex items-center justify-center">
+        <div className="text-center p-8">
+          <FaCar className="h-16 w-16 text-earth/30 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-earth mb-2">Vehicle not found</h2>
+          <p className="text-earth/60 mb-4">The requested vehicle could not be found.</p>
+          <p className="text-sm text-earth/40 mb-6">Car ID: {carId}</p>
           <button
             onClick={() => window.history.back()}
-            className="w-full px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all duration-200 font-semibold shadow-md hover:shadow-lg"
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
           >
             Go Back
           </button>
@@ -370,22 +466,13 @@ function BookingPageContent() {
   const bookedDates = getBookedDates(car.schedule || []);
 
   return (
-    <div className="min-h-screen bg-secondary/5">
+    <div className="bg-white min-h-screen">
       {/* Hero Section */}
-      <div className="relative bg-primary/5 overflow-hidden">
-        <div className="absolute inset-0 bg-earth/10"></div>
-        <div className="relative container mx-auto px-4 py-12 sm:py-16 lg:py-20">
-          <div className="max-w-4xl">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-earth mb-4">
-              Book {car.model}
-            </h1>
-            <p className="text-lg sm:text-xl text-earth/80 max-w-2xl">
-              Select your preferred dates and complete your booking for this
-              premium vehicle
-            </p>
-          </div>
+      <div className="bg-primary/10 py-12">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold text-earth mb-2">Book {car.model}</h1>
+          <p className="text-earth/80">Select your preferred dates and complete your booking for this premium vehicle</p>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
       </div>
 
       {/* Main Content */}
@@ -395,7 +482,7 @@ function BookingPageContent() {
             {/* Car Details */}
             <div className="xl:col-span-2 space-y-6">
               {/* Car Image and Basic Info */}
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="bg-white rounded-xl shadow-md border border-earth/10 overflow-hidden">
                 <div className="relative h-64 sm:h-80 lg:h-96">
                   <Image
                     src={car.image}
@@ -408,7 +495,7 @@ function BookingPageContent() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6">
                     <div className="bg-white/90 backdrop-blur-sm rounded-xl px-3 py-1 sm:px-4 sm:py-2">
-                      <span className="text-xs sm:text-sm font-semibold text-gray-800">
+                      <span className="text-xs sm:text-sm font-semibold text-earth">
                         Premium Vehicle
                       </span>
                     </div>
@@ -417,18 +504,18 @@ function BookingPageContent() {
                 <div className="p-6 sm:p-8">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                     <div>
-                      <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                      <h2 className="text-2xl sm:text-3xl font-bold text-earth mb-2">
                         {car.model}
                       </h2>
-                      <p className="text-gray-600 text-lg">
+                      <p className="text-earth/60 text-lg">
                         {car.type.description}
                       </p>
                     </div>
                     <div className="mt-4 sm:mt-0 text-right">
                       <div className="text-3xl sm:text-4xl font-bold text-primary">
-                        KES {car.pricePerDay}
+                        KES {car.pricePerDay.toLocaleString()}
                       </div>
-                      <span className="text-sm text-gray-500 font-medium">
+                      <span className="text-sm text-earth/60 font-medium">
                         /day
                       </span>
                     </div>
@@ -437,8 +524,8 @@ function BookingPageContent() {
               </div>
 
               {/* Features */}
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8">
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <div className="bg-white rounded-xl shadow-md border border-earth/10 p-6 sm:p-8">
+                <h3 className="text-xl sm:text-2xl font-semibold text-earth mb-6 flex items-center">
                   <div className="p-3 bg-primary rounded-xl mr-4">
                     <FaCar className="h-6 w-6 text-white" />
                   </div>
@@ -448,12 +535,12 @@ function BookingPageContent() {
                   {car.features.map((feature, index) => (
                     <div
                       key={index}
-                      className="flex items-center space-x-4 p-3 bg-gray-50 rounded-xl hover:bg-secondary transition-colors duration-200"
+                      className="flex items-center space-x-4 p-3 bg-earth/5 rounded-xl hover:bg-earth/10 transition-colors duration-300"
                     >
-                      <div className="p-2 bg-success rounded-lg">
+                      <div className="p-2 bg-primary rounded-lg">
                         <FaCheck className="h-3 w-3 text-white" />
                       </div>
-                      <span className="text-gray-700 font-medium">
+                      <span className="text-earth font-medium">
                         {feature}
                       </span>
                     </div>
@@ -463,30 +550,30 @@ function BookingPageContent() {
 
               {/* Quick Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 text-center border border-gray-100">
+                <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 text-center border border-earth/10">
                   <div className="p-3 bg-primary rounded-xl w-fit mx-auto mb-3">
                     <FaUsers className="h-5 w-5 text-white" />
                   </div>
-                  <div className="text-2xl font-bold text-gray-800">5</div>
-                  <div className="text-sm text-gray-600 font-medium">
+                  <div className="text-2xl font-bold text-earth">5</div>
+                  <div className="text-sm text-earth/60 font-medium">
                     Passengers
                   </div>
                 </div>
-                <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 text-center border border-gray-100">
-                  <div className="p-3 bg-success rounded-xl w-fit mx-auto mb-3">
+                <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 text-center border border-earth/10">
+                  <div className="p-3 bg-primary rounded-xl w-fit mx-auto mb-3">
                     <FaGasPump className="h-5 w-5 text-white" />
                   </div>
-                  <div className="text-2xl font-bold text-gray-800">Auto</div>
-                  <div className="text-sm text-gray-600 font-medium">
+                  <div className="text-2xl font-bold text-earth">Auto</div>
+                  <div className="text-sm text-earth/60 font-medium">
                     Transmission
                   </div>
                 </div>
-                <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 text-center border border-gray-100 col-span-2 sm:col-span-1">
-                  <div className="p-3 bg-earth rounded-xl w-fit mx-auto mb-3">
+                <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 text-center border border-earth/10 col-span-2 sm:col-span-1">
+                  <div className="p-3 bg-primary rounded-xl w-fit mx-auto mb-3">
                     <FaCog className="h-5 w-5 text-white" />
                   </div>
-                  <div className="text-2xl font-bold text-gray-800">2024</div>
-                  <div className="text-sm text-gray-600 font-medium">
+                  <div className="text-2xl font-bold text-earth">2024</div>
+                  <div className="text-sm text-earth/60 font-medium">
                     Model Year
                   </div>
                 </div>
@@ -497,23 +584,22 @@ function BookingPageContent() {
             <div className="xl:col-span-1">
               <div className="sticky top-4 sm:top-8">
                 <div className="mb-6">
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 flex items-center">
+                  <h3 className="text-xl sm:text-2xl font-semibold text-earth mb-3 flex items-center">
                     <div className="p-3 bg-primary rounded-xl mr-4">
                       <FaCalendarAlt className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                     </div>
                     Availability
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                    Orange dates are already booked. Green dates are available
-                    for your booking.
+                  <p className="text-sm sm:text-base text-earth/60 leading-relaxed">
+                    Orange dates are already booked. Blue dates are available for your booking.
                   </p>
                 </div>
 
                 <BookingCalendar bookedDates={bookedDates} />
 
                 {bookedDates.length > 0 && (
-                  <div className="mt-6 p-4 sm:p-6 bg-gradient-to-r from-accent/10 to-accent/5 border border-accent/20 rounded-2xl">
-                    <h4 className="text-sm sm:text-base font-bold text-earth mb-4 flex items-center">
+                  <div className="mt-6 p-4 sm:p-6 bg-primary/10 border border-primary/20 rounded-xl">
+                    <h4 className="text-sm sm:text-base font-semibold text-earth mb-4 flex items-center">
                       <FaCalendarAlt className="mr-2" />
                       Upcoming Bookings
                     </h4>
@@ -531,13 +617,13 @@ function BookingPageContent() {
                               year: "numeric",
                             })}
                           </span>
-                          <span className="text-xs text-white bg-booked px-2 py-1 rounded-full">
+                          <span className="text-xs text-white bg-accent px-2 py-1 rounded-full">
                             Booked
                           </span>
                         </div>
                       ))}
                       {bookedDates.length > 3 && (
-                        <div className="text-xs sm:text-sm text-accent font-medium text-center pt-2">
+                        <div className="text-xs sm:text-sm text-primary font-medium text-center pt-2">
                           +{bookedDates.length - 3} more dates
                         </div>
                       )}
@@ -564,7 +650,6 @@ function BookingPageContent() {
           </div>
         </div>
       </section>
-      <div></div>
     </div>
   );
 }
@@ -572,7 +657,7 @@ function BookingPageContent() {
 // Main component that wraps everything in Suspense
 const BookingPage = () => {
   return (
-    <Suspense fallback={<BookingPageFallback />}>
+    <Suspense fallback={<BookingPageLoading />}>
       <BookingPageContent />
     </Suspense>
   );

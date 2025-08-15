@@ -62,10 +62,10 @@ function useCars() {
     const fetchCars = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/fleet', {
-          method: 'GET',
+        const response = await fetch("/api/fleet", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
@@ -74,26 +74,28 @@ function useCars() {
         }
 
         const data: ApiResponse = await response.json();
-        
+
         if (data.success) {
           // Process the grouped data and add additional properties
-          const processedGroups = data.data.map(group => ({
+          const processedGroups = data.data.map((group) => ({
             ...group,
-            cars: group.cars.map(car => ({
+            cars: group.cars.map((car) => ({
               ...car,
               rating: car.rating || 4.5,
               reviews: car.reviews || Math.floor(Math.random() * 50) + 5,
-              popular: car.popular || Math.random() > 0.7
-            }))
+              popular: car.popular || Math.random() > 0.7,
+            })),
           }));
-          
+
           setCategoryGroups(processedGroups);
         } else {
-          throw new Error(data.message || 'Failed to fetch cars');
+          throw new Error(data.message || "Failed to fetch cars");
         }
       } catch (err) {
-        console.error('Error fetching cars:', err);
-        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+        console.error("Error fetching cars:", err);
+        setError(
+          err instanceof Error ? err.message : "An unexpected error occurred"
+        );
       } finally {
         setLoading(false);
       }
@@ -111,15 +113,19 @@ function useCars() {
 
 // Helper function to get all cars as flat array
 function getAllCarsFromGroups(categoryGroups: CategoryGroup[]): Car[] {
-  return categoryGroups.flatMap(group => group.cars);
+  return categoryGroups.flatMap((group) => group.cars);
 }
 
-
 // Helper function to find category by ID
-function findCategoryById(categoryGroups: CategoryGroup[], categoryId: string): CategoryGroup | null {
-  return categoryGroups.find(group => 
-    group.cars.length > 0 && group.cars[0].type._id === categoryId
-  ) || null;
+function findCategoryById(
+  categoryGroups: CategoryGroup[],
+  categoryId: string
+): CategoryGroup | null {
+  return (
+    categoryGroups.find(
+      (group) => group.cars.length > 0 && group.cars[0].type._id === categoryId
+    ) || null
+  );
 }
 
 // Loading component
@@ -137,13 +143,19 @@ function CarsPageLoading() {
           <div className="bg-secondary/10 rounded-lg p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-10 bg-earth/20 rounded animate-pulse"></div>
+                <div
+                  key={i}
+                  className="h-10 bg-earth/20 rounded animate-pulse"
+                ></div>
               ))}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-xl shadow-md overflow-hidden border border-earth/10">
+              <div
+                key={i}
+                className="bg-white rounded-xl shadow-md overflow-hidden border border-earth/10"
+              >
                 <div className="h-48 bg-earth/20 animate-pulse"></div>
                 <div className="p-6 space-y-3">
                   <div className="h-6 bg-earth/20 rounded animate-pulse"></div>
@@ -170,7 +182,6 @@ function CarCard({ car }: { car: Car }) {
             Popular
           </span>
         )}
-        
 
         <button className="absolute top-3 right-3 z-10 bg-white/80 hover:bg-white p-2 rounded-full transition-colors">
           <FaHeart className="h-4 w-4 text-earth" />
@@ -193,7 +204,9 @@ function CarCard({ car }: { car: Car }) {
           <div className="flex items-center space-x-1 mb-2">
             <FaStar className="h-4 w-4 text-yellow-400" />
             <span className="text-sm font-medium">{car.rating}</span>
-            <span className="text-sm text-earth/60">({car.reviews} reviews)</span>
+            <span className="text-sm text-earth/60">
+              ({car.reviews} reviews)
+            </span>
           </div>
           <div className="flex items-center text-sm text-earth/60">
             <FaMapMarkerAlt className="h-3 w-3 mr-1" />
@@ -225,30 +238,37 @@ function CarCard({ car }: { car: Car }) {
 
         <div className="space-y-3">
           <Link
-             href={`/booking?carid=${car._id}`}
+            href={`/booking?carid=${car._id}`}
             className="w-full block text-center px-4 py-3 rounded-lg font-medium transition-colors bg-primary hover:bg-primary-dark text-white"
           >
             Proceed to booking
           </Link>
-            <div className="flex space-x-2">
-              <a
-                href="https://wa.me/254111446888"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-earth/20 text-earth hover:bg-earth/5 transition-colors"
-              >
-                <FaWhatsapp className="h-4 w-4" />
-                <span className="text-sm">WhatsApp</span>
-              </a>
-              <a
-                href="tel:+254111446888"
-                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-earth/20 text-earth hover:bg-earth/5 transition-colors"
-              >
-                <FaPhone className="h-4 w-4" />
-                <span className="text-sm">Call</span>
-              </a>
-            </div>
-        
+          <div className="flex space-x-2">
+            <a
+              href={`https://wa.me/254111446888?text=${encodeURIComponent(
+                `Hello, I'm interested in booking this vehicle.\n\n` +
+                  `Model: ${car.model}\n` +
+                  `ID: ${car._id}\n` +
+                  `Location: ${car.location}\n` +
+                  `Price Per Day: KES ${car.pricePerDay}\n` +
+                  `Year: ${car.year}\n` +
+                  `Image: ${car.image}`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-earth/20 text-earth hover:bg-earth/5 transition-colors"
+            >
+              <FaWhatsapp className="h-4 w-4" />
+              <span className="text-sm">WhatsApp</span>
+            </a>
+            <a
+              href="tel:+254111446888"
+              className="flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-earth/20 text-earth hover:bg-earth/5 transition-colors"
+            >
+              <FaPhone className="h-4 w-4" />
+              <span className="text-sm">Call</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -261,8 +281,12 @@ function CarsContent() {
   const categoryParam = searchParams.get("category") || "all";
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [priceFilter, setPriceFilter] = useState<"all" | "budget" | "mid" | "premium">("all");
-  const [sortBy, setSortBy] = useState<"popular" | "price-low" | "price-high" | "rating">("popular");
+  const [priceFilter, setPriceFilter] = useState<
+    "all" | "budget" | "mid" | "premium"
+  >("all");
+  const [sortBy, setSortBy] = useState<
+    "popular" | "price-low" | "price-high" | "rating"
+  >("popular");
 
   const { categoryGroups, loading, error, refetch } = useCars();
 
@@ -272,12 +296,17 @@ function CarsContent() {
     const allCars = getAllCarsFromGroups(categoryGroups);
 
     const filtered = allCars.filter((car) => {
-      const matchesCategory = categoryParam === "all" || car.type._id === categoryParam;
-      const matchesSearch = car.model.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        categoryParam === "all" || car.type._id === categoryParam;
+      const matchesSearch = car.model
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
       const matchesPrice =
         priceFilter === "all" ||
         (priceFilter === "budget" && car.pricePerDay <= 3000) ||
-        (priceFilter === "mid" && car.pricePerDay > 3000 && car.pricePerDay <= 6000) ||
+        (priceFilter === "mid" &&
+          car.pricePerDay > 3000 &&
+          car.pricePerDay <= 6000) ||
         (priceFilter === "premium" && car.pricePerDay > 6000);
 
       return matchesCategory && matchesSearch && matchesPrice;
@@ -298,12 +327,20 @@ function CarsContent() {
     });
 
     return filtered;
-  }, [categoryParam, searchTerm, priceFilter, sortBy, categoryGroups, loading, error]);
+  }, [
+    categoryParam,
+    searchTerm,
+    priceFilter,
+    sortBy,
+    categoryGroups,
+    loading,
+    error,
+  ]);
 
   // Get category display name
   const getCategoryDisplayName = () => {
     if (categoryParam === "all") return "All Vehicles";
-    
+
     const category = findCategoryById(categoryGroups, categoryParam);
     return category ? category._id : "Unknown Category";
   };
@@ -311,16 +348,18 @@ function CarsContent() {
   const categoryDisplayName = getCategoryDisplayName();
 
   if (loading) return <CarsPageLoading />;
-  
+
   if (error) {
     return (
       <div className="bg-white min-h-screen flex items-center justify-center">
         <div className="text-center p-8">
           <FaCar className="h-16 w-16 text-earth/30 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-earth mb-2">Failed to load vehicles</h2>
+          <h2 className="text-xl font-semibold text-earth mb-2">
+            Failed to load vehicles
+          </h2>
           <p className="text-earth/60 mb-4">{error}</p>
-          <button 
-            onClick={refetch} 
+          <button
+            onClick={refetch}
             className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
           >
             Try Again
@@ -335,8 +374,12 @@ function CarsContent() {
       {/* Hero Section */}
       <div className="bg-primary/10 py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold text-earth mb-2">{categoryDisplayName}</h1>
-          <p className="text-earth/80">Browse our selection of {categoryDisplayName.toLowerCase()}</p>
+          <h1 className="text-4xl font-bold text-earth mb-2">
+            {categoryDisplayName}
+          </h1>
+          <p className="text-earth/80">
+            Browse our selection of {categoryDisplayName.toLowerCase()}
+          </p>
         </div>
       </div>
 
@@ -359,7 +402,11 @@ function CarsContent() {
 
               <select
                 value={priceFilter}
-                onChange={(e) => setPriceFilter(e.target.value as "all" | "budget" | "mid" | "premium")}
+                onChange={(e) =>
+                  setPriceFilter(
+                    e.target.value as "all" | "budget" | "mid" | "premium"
+                  )
+                }
                 className="w-full px-4 py-2 rounded-lg border border-earth/20 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="all">All Prices</option>
@@ -370,7 +417,15 @@ function CarsContent() {
 
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as "popular" | "price-low" | "price-high" | "rating")}
+                onChange={(e) =>
+                  setSortBy(
+                    e.target.value as
+                      | "popular"
+                      | "price-low"
+                      | "price-high"
+                      | "rating"
+                  )
+                }
                 className="w-full px-4 py-2 rounded-lg border border-earth/20 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="popular">Most Popular</option>
@@ -405,9 +460,10 @@ function CarsContent() {
                 All
               </Link>
               {categoryGroups.map((group) => {
-                const categoryId = group.cars.length > 0 ? group.cars[0].type._id : '';
+                const categoryId =
+                  group.cars.length > 0 ? group.cars[0].type._id : "";
                 const categoryTitle = group._id;
-                
+
                 return (
                   <Link
                     key={categoryId}
@@ -436,7 +492,9 @@ function CarsContent() {
           {filteredAndSortedCars.length === 0 && (
             <div className="text-center py-12">
               <FaCar className="h-16 w-16 text-earth/30 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-earth mb-2">No vehicles found</h3>
+              <h3 className="text-lg font-semibold text-earth mb-2">
+                No vehicles found
+              </h3>
               <p className="text-earth/60 mb-4">
                 Try adjusting your search filters to find more options.
               </p>
@@ -467,5 +525,5 @@ export default function CarsPage() {
 }
 
 function fetchCars() {
-    throw new Error("Function not implemented.");
+  throw new Error("Function not implemented.");
 }
